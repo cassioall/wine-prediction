@@ -57,8 +57,9 @@ presença de valores ausentes e/ou informações inválidas. Também realizar po
     
 Depois de definir os dois datasets, assim como as variáveis dependentes e independente, a modelagem foi realizada da seguinte maneira:
 
-- Mesmo depois de 'binarizar'a base de dados, as classes ainda ficaram desbalanceadas. Portanto foi aplicado o algorítmo de balanceamento
-de classes SMOTEENN, que utiliza técnicas combinadas de oversampling e undersampling.
+- Mesmo depois de 'binarizar'a base de dados, as classes ainda ficaram desbalanceadas. Portanto foi aplicado o algorítmo de balanceamento de classes SMOTEENN, que utiliza técnicas combinadas de oversampling e undersampling.
+- Para padronizar os dados foi utilizado o algorítmo RobustScaler, pois ele comporta bem com outliers, diferentemente do StandardScaler,
+utilizando a mediana, ao invés da média, para realizar a padronização.
 - Para selecionar o modelo final foi utilizada a técnica de validação cruzada dos dados, por fazer vários testes com o banco de dados,
 assim diminuindo o risco de acontecer sobreajuste . O modelo que obteve a melhor acurácia média foi o selecionado.
 - Os modelos testados foram: random forest, árvores de decisão, regressão logística, naive bayes gaussiano, KNN, redes neurais (MLP) e support vector machine.
