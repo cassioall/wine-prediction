@@ -151,7 +151,7 @@ def modelar(df):
     
 #LEIRUTA DO DATASET:
 
-caminho = r'C:\Users\cassio_alcantara\Documents\ESTUDOS\DEMAIS ESTUDOS\winequality.csv'
+caminho = r'winequality.csv'
 df = ler_dados(caminho)
 
 #ANÁLISE EXPLORATÓRIA
