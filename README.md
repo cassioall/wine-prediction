@@ -1,9 +1,8 @@
 # wine-prediction
 Teste cognitivo.ai
 
-####################################################
-##################### CONCEITO #####################
-####################################################
+######################## CONCEITO ########################
+
 
 Objetivo: Criar um modelo para estimar a qualidade do vinho.
 
@@ -26,9 +25,7 @@ Variável Independente:
 
 13. Quality
 
-####################################################
-################ ESTRATÉGIA ADOTADA ################
-####################################################
+################### ESTRATÉGIA ADOTADA ###################
 
 Primeiramente foi realizada uma análise descritiva dos dados, afim de identificar possíveis padrões entre as independentes (multicolinearidade),
 presença de valores ausentes e/ou informações inválidas. Também realizar possíveis tratamentos dos dados. Nesta foram identificados alguns pontos:
@@ -66,10 +63,8 @@ de classes SMOTEENN, que utiliza técnicas combinadas de oversampling e undersam
 assim diminuindo o risco de acontecer sobreajuste . O modelo que obteve a melhor acurácia média foi o selecionado.
 - Os modelos testados foram: random forest, árvores de decisão, regressão logística, naive bayes gaussiano, KNN, redes neurais (MLP) e support vector machine.
  Não escolhendo um em específico para trabalhar os dados, mas deixando com que o resultado diga qual é o que melhor se ajusta.
- 
-####################################################
-#################### RESULTADOS ####################
-####################################################
+
+####################### RESULTADOS #######################
 
 No final da modelagem os modelos escolhidos e seus respectivos resultados foram:
 
