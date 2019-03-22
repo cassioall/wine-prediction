@@ -49,11 +49,15 @@ presença de valores ausentes e/ou informações inválidas. Também realizar po
   6 - Nenhuma variável independente tem correlação alta com a dependente.
 
   7 - A variável dependente é discreta. Portanto, três possíveis estratégias foram consideradas/testadas:
+      
       * Transformar em uma variável binária, sendo que 1 significaria bom e 0 ruim. Classificando bom como 'quality' >= 7
+      
       * Transformar a variável em três níveis: ruim (0 a 3), médio (4 a 6) e bom (7 a 10).
+      
       * Tratar a variável como está e modelá-la.
-    A estratégia escolhida foi de 'binarizar' a variável dependente, pois existem poucos registros menores do que 4 e maiores do que 6,
-    o que atrapalharia um pouco a modelagem nos outros casos.
+      
+   A estratégia escolhida foi de 'binarizar' a variável dependente, pois existem poucos registros menores do que 4 e maiores do que 6,
+   o que atrapalharia um pouco a modelagem nos outros casos.
     
 Depois de definir os dois datasets, assim como as variáveis dependentes e independente, a modelagem foi realizada da seguinte maneira:
 
