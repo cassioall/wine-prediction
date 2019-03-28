@@ -1,10 +1,9 @@
 # wine-prediction
-Teste cognitivo.ai
 
 ######################## CONCEITO ########################
 
 
-Objetivo: Criar um modelo para estimar a qualidade do vinho.
+Aim: Create a model to estimate the quality of a bottle of wine.
 
 Variáveis Dependentes:
 
