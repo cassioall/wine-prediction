@@ -1,84 +1,84 @@
 # wine-prediction
 
-######################## CONCEITO ########################
+######################## CONCEPT ########################
 
 
 Aim: Create a model to estimate the quality of a bottle of wine.
 
-Variáveis Dependentes:
+Dependent Variables:
 
-1. Tipo
-2. Acidez fixa
-3. Volatilidade da acidez
-4. Ácido cítrico
-5. Açúcar residual
-6. Cloretos
-7. Dióxido de enxofre livre
-8. Dióxido de enxofre total
-9. Densidade
+1. type
+2. fixed acidity
+3. volatile acidity
+4. citric acid
+5. residual sugar
+6. chlorides
+7. free sulfur dioxide
+8. total sulfur dioxide
+9. density
 10. pH
-11. Sulfatos
-12. Álcool
+11. sulphates
+12. alcohol
 
-Variável Independente:
+Independent Variable:
 
-13. Quality
+13. quality
 
-################### ESTRATÉGIA ADOTADA ###################
+################### STRATEGY ADOPTED ###################
 
-Primeiramente foi realizada uma análise descritiva dos dados, afim de identificar possíveis padrões entre as independentes (multicolinearidade),
-presença de valores ausentes e/ou informações inválidas. Também realizar possíveis tratamentos dos dados. Nesta foram identificados alguns pontos:
 
-  1 - A variável 'type' é categórica, as demais independentes são contínuas. Então é mais interessante separar o dataframe em dois,
-  um para cada nível da variável.
+First, a descriptive analysis of the data was carried out in order to identify possible patterns among the independent (multicollinearity),
+presence of missing values and/or invalid information. Also perform possible data processing. In this were identified some points:
 
-  2 - A variável 'alcohol' aprensentou alguns registros não numéricos, estes foram excluídos do dataset para continuar com a modelagem.
+  1 - The variable 'type' is categorical, the other independent variables are continuous. So it's more interesting to separate the dataframe in two, one for each level of the variable.
 
-  3 - A princípio dá para notar que as variáveis não estão na mesma escala.
+  2 - The variable 'alcohol' presented some non-numeric registers, these were excluded from the dataset to continue with the modeling.
+ 
+  3 - At first it should be noted that the variables are not on the same scale.
 
-  4 - Não há presença de valores nulos.
+  4 - No null values are present.
 
-  5 - As variáveis 'free sulfur dioxide' e 'total sulfur dioxide' possuem correlação moderada (0.6 aprox)
-   em ambos os dataframes. Após pesquisa, encontrei que o 'total sulfur dioxide' é "o conjunto das diferentes formas de 
-   dióxido de enxofre presentes, no estado livre ou combinadas com os componentes do vinho".
-   "Somando o dióxido de enxofre combinado ao dióxido de enxofre livre, obtém-se o dióxido de enxofre total."
-   Isto quer dizer que, somando com o valor de correlação, existe a chance de resultar e problema
-   de multicolinearidade. Portanto a variável 'free sulfur dioxide' foi excluída na modelagem.
+  5 - The variables 'free sulfur dioxide' and 'total sulfur dioxide' had a strong correlation (0.75 aprox)
+   in the dataframe. After research, I found that 'total sulfur dioxide' is' the set of different forms of
+   sulfur dioxide present in the free state or combined with the components of the wine ".
+   "Adding the combined sulfur dioxide to the free sulfur dioxide gives the total sulfur dioxide."
+   This means that, in addition to the correlation value, there is a chance of a problem
+   of multicollinearity. Therefore, the variable 'free sulfur dioxide' was excluded in the modeling.
 
-  6 - Nenhuma variável independente tem correlação alta com a dependente.
+  6 - No independent variable has a high correlation with the dependent variable.
 
-  7 - A variável dependente é discreta. Portanto, três possíveis estratégias foram consideradas/testadas:
+  7 - The dependent variable is discrete. Therefore, three possible strategies were considered / tested:
       
-      * Transformar em uma variável binária, sendo que 1 significaria bom e 0 ruim. Classificando bom como 'quality' >= 7
+      * Transform into a binary variable, where 1 would mean good and 0 bad. Classifying good as 'quality'> = 7
       
-      * Transformar a variável em três níveis: ruim (0 a 3), médio (4 a 6) e bom (7 a 10).
+      * Transform the variable into three levels: bad (0 to 3), medium (4 to 6) and good (7 to 10).
       
-      * Tratar a variável como está e modelá-la.
+      * Treat the variable as it is and model it.
       
-   A estratégia escolhida foi de 'binarizar' a variável dependente, pois existem poucos registros menores do que 4 e maiores do que 6,
-   o que atrapalharia um pouco a modelagem nos outros casos.
+   
+  The chosen strategy was to 'binarize' the dependent variable, since there are few records smaller than 4 and larger than 6,
+   which would disrupt the modeling in other cases.
     
-Depois de definir os dois datasets, assim como as variáveis dependentes e independente, a modelagem foi realizada da seguinte maneira:
+After defining the two datasets, as well as the dependent and independent variables, the modeling was performed as follows:
 
-- Mesmo depois de 'binarizar'a base de dados, as classes ainda ficaram desbalanceadas. Portanto foi aplicado o algorítmo de balanceamento de classes SMOTEENN, que utiliza técnicas combinadas de oversampling e undersampling.
-- Para padronizar os dados foi utilizado o algorítmo RobustScaler, pois ele comporta bem com outliers, diferentemente do StandardScaler,
-utilizando a mediana, ao invés da média, para realizar a padronização.
-- Para selecionar o modelo final foi utilizada a técnica de validação cruzada dos dados, por fazer vários testes com o banco de dados,
-assim diminuindo o risco de acontecer sobreajuste . O modelo que obteve a melhor acurácia média foi o selecionado.
-- Os modelos testados foram: random forest, árvores de decisão, regressão logística, naive bayes gaussiano, KNN, redes neurais (MLP) e support vector machine.
- Não escolhendo um em específico para trabalhar os dados, mas deixando com que o resultado diga qual é o que melhor se ajusta.
+- Even after 'binarizing' the database, the classes were still unbalanced. Therefore, the SMOTEENN class balancing algorithm, which uses combined oversampling and undersampling techniques, was applied.
+- To standardize the data was used the algorithm RobustScaler, because it behaves well with outliers, unlike StandardScaler,
+using the median, instead of the mean, to perform the standardization.
+- To select the final model, the technique of cross-validation of the data was used, by doing several tests with the database,
+thus reducing the risk of over-adjustment. The model that obtained the best average accuracy was the one selected.
+- The models tested were: random forest, árvores de decisão, regressão logística, naive bayes gaussiano, KNN, redes neurais (MLP) and support vector machine. Not choosing a specific one to work with the data, but letting the result tell you which one fits best.
 
-####################### RESULTADOS #######################
+####################### RESULTS #######################
 
-No final da modelagem os modelos escolhidos e seus respectivos resultados foram:
+At the end of the modeling the chosen models and their respective results were:
 
-Para os vinhos vermelhos:
-  Modelo: regressão logística
-  Acurácia: 0.88 (+/- 0.12)
+For the red wines:
+  Model: regressão logística
+  Score: 0.88 (+/- 0.12)
 
-Para os vinhos brancos:
-  Modelo: random forest
-  Acurácia: 0.81 (+/- 0.08)
+For the white wines:
+  Model: random forest
+  Score: 0.81 (+/- 0.08)
 
-Isto quer dizer que são bons modelos que acertam bem as predições.
+This means that they are good models that correctly predict.
 
