@@ -1,4 +1,3 @@
-#IMPORTAÇÕES
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -19,82 +18,82 @@ from sklearn.svm import SVC
 from imblearn.combine import SMOTEENN
 from collections import Counter
 
-## CRIAÇÃO DE FUNÇÕES
+## CREATION OF FUNCTIONS
 
-# Ler os dados
+# Read the data
 
-def ler_dados(caminho):
+def read_data(path):
     
-    dados = pd.read_csv(caminho, header = 0, sep = ';')
+    data = pd.read_csv(path, header = 0, sep = ';')
     
-    return dados
+    return data
 
-# Tratar 'alcohol'
+#  'alcohol'
 
-def tratar_alcohol(dados):
+def treat_alcohol(data):
     
-    mask = dados['alcohol'].str.len() <= 5
-    dados = dados.loc[mask]
-    dados['alcohol'] = dados['alcohol'].astype('float64')
+    mask = data['alcohol'].str.len() <= 5
+    data = data.loc[mask]
+    data['alcohol'] = data['alcohol'].astype('float64')
     
-    return dados
+    return data
 
-# Separar dataframe pela variável 'type'
+# Separate dataframe with variable 'type'
 
-def separar_df(dados):
+def separate_df(data):
     
-    mask_white = dados['type'] == 'White'
-    mask_red = dados['type'] == 'Red'
+    mask_white = data['type'] == 'White'
+    mask_red = data['type'] == 'Red'
 
-    dados_white = dados.loc[mask_white]
-    del dados_white['type']
-    dados_red = dados.loc[mask_red]
-    del dados_red['type']
+    data_white = data.loc[mask_white]
+    del data_white['type']
+    data_red = data.loc[mask_red]
+    del data_red['type']
     
-    return dados_red, dados_white
+    return data_red, data_white
 
-# Transformar variável resposta em binária:
+# Transform variable response into binary:
 
-def resp_binario(dados):
-    #todo vinho com qualidade acima de 6 será classificado como 'bom'.
-    dados['quality'] = dados['quality'].astype(int)
+def resp_binary(data):
+    # any wine with quality above 6 will be classified as 'good'.
+    data['quality'] = data['quality'].astype(int)
     bins = (2, 6, 9)
-    labels = ['bom', 'ruim']
-    dados['quality'] = pd.cut(dados['quality'], bins = bins, labels = labels, include_lowest = False)
+    labels = ['good', 'bad']
+    data['quality'] = pd.cut(data['quality'], bins = bins, labels = labels, include_lowest = False)
 
     label = LabelEncoder()
-    dados['quality'] = label.fit_transform(dados['quality'])
+    data['quality'] = label.fit_transform(data['quality'])
     
-    return dados
+    return data
 
-# Algoritmo SMOTEENN para balanceamento de classes:
+# SMOTEENN algorithm for class balancing:
 
-def balancear_classes(X,Y):
+def balance_classes(X,Y):
     
     sme = SMOTEENN(random_state=42)
     X_res, y_res = sme.fit_resample(X,Y)
 
     return X_res, y_res
 
-#Padronizar a base. Utilizar o RobustScaler por ele tratar bem a presença de outliers:
+# Standardize the base. Use RobustScaler because it treats the presence of outliers well:
 
-def padronizar(x_treino):
+def padronize(x_train):
     
     rob = RobustScaler()
-    rob.fit(x_treino)
+    rob.fit(x_train)
     
-    x_treino_transf = rob.fit_transform(x_treino)
+    x_train_transf = rob.fit_transform(x_train)
 
-    return x_treino_transf
+    return x_train_transf
 
-def modelar(df):
+def model(df):
     
-    df_bin = resp_binario(df)
-    y_treino = df_bin['quality']
-    x_treino = df_bin.drop(['free sulfur dioxide','quality'], axis = 1)
+    df_bin = resp_binary(df)
+    y_train = df_bin['quality']
+    x_train = df_bin.drop(['free sulfur dioxide','quality'], axis = 1)
     
     
-    #objetos dos modelos
+    # model objects
     rf = RandomForestClassifier(n_estimators=200)
     dtree = DecisionTreeClassifier(criterion = 'entropy',
                                min_weight_fraction_leaf = .06,
@@ -105,7 +104,7 @@ def modelar(df):
     neur = MLPClassifier()
     svc = SVC(kernel = 'rbf', class_weight = 'balanced', probability = True)
 
-    #lista com modelos e nomes
+    # list with models and names
     mods = [dtree,
         logreg,
         gaus,
@@ -114,87 +113,87 @@ def modelar(df):
         neur,
         svc
         ]
-    nome_modelo = {type(dtree): 'arvore_decisao',
-               type(logreg): 'regressao_logistica',
+    name_model = {type(dtree): 'decision_tree',
+               type(logreg): 'logistic_regression',
                type(gaus): 'naive_bayes',
                type(rf): 'random_forest',
                type(knn): 'knn',
-               type(neur): 'rede_neural',
+               type(neur): 'neural_nets',
                type(svc): 'svc'
               }
-    media = 0
+    mean = 0
     std = 0
     kfold = KFold(n_splits=10)
     mod_final = None
 
     for mod in mods:
-        x_treino_balanc, y_treino_balanc = balancear_classes(x_treino,y_treino)
-        x_treino_padr = padronizar(x_treino)
-        score_novo = cross_val_score(mod, x_treino_padr, y_treino, cv=kfold)
-        media_novo = score_novo.mean()
-        std_novo = score_novo.std()
+        x_train_balanc, y_train_balanc = balance_classes(x_train,y_train)
+        x_train_padr = padronize(x_train)
+        score_new = cross_val_score(mod, x_train_padr, y_train, cv=kfold)
+        mean_new = score_new.mean()
+        std_new = score_new.std()
 
-        if media_novo > media:
-            media = media_novo
-            std = std_novo
+        if mean_new > mean:
+            mean = mean_new
+            std = std_new
             mod_final = mod
         else:
             pass
 
-    print('Distribuição do Dataset original %s' % Counter(y_treino))
-    print('Distribuição do Dataset reamostrado %s' % Counter(y_treino_balanc)) 
+    print('Original dataset distribution %s' % Counter(y_train))
+    print('Redesigned dataset distribution %s' % Counter(y_train_balanc)) 
     print('\n')
-    print('Melhor modelo: %s' % nome_modelo[type(mod_final)])
-    print("Acurácia do modelo final: %0.2f (+/- %0.2f)" % (media, std * 2))
+    print('Best model: %s' % name_model[type(mod_final)])
+    print("Score of the final model: %0.2f (+/- %0.2f)" % (mean, std * 2))
     
     return None
     
-#LEIRUTA DO DATASET:
+# READING THE DATASET:
 
-caminho = r'winequality.csv'
-df = ler_dados(caminho)
+path = r'winequality.csv'
+df = read_data(path)
 
-#ANÁLISE EXPLORATÓRIA
+# EXPLORATORY ANALYSIS
 
-#Plotando as 10 primeiras linhas do dataframe para visualização dos dados
+# Plotting the first 10 lines of the dataframe for data visualization
 df.head(10)
 
-#Informação das variáveis
+# Information of the dataset 
 df.info()
 
-#Variável 'alcohol'
-df = tratar_alcohol(df)
+#Variable 'alcohol'
+df = treat_alcohol(df)
 
-#Criando dois dataframes para cada tipo de vinho
-df_red, df_white = separar_df(df)
+# Creating two dataframes for each type of wine
+df_red, df_white = separate_df(df)
 
-#Estatísticas descritivas de cada dataframe
+# Descriptive statistics for each dataframe
 df_white.describe()
 df_red.describe()
 
-# Verificando a média de cada independente para cada nível da dependente
+# Checking the average of each independent for each level of the dependent
 df_red.groupby('quality').mean()
 df_white.groupby('quality').mean()
 
-#Matrizes de correlação
+# Correlation matrices
 df_white.corr()
 df_red.corr()
 
-#VARIÁVEL DEPENDENTE
+# DEPENDENT VARIABLE
 
-#Contagem de cada nível da variável
+# Count of each level of the variable
 df_red['quality'].value_counts()
 df_white['quality'].value_counts()
 
-# Gráficos de barra da variável dependente
+# Bar graphs of the dependent variable
 df_red['quality'].value_counts().plot.bar()
 df_white['quality'].value_counts().plot.bar()
 
-#Boxplot
+# Boxplot
 sns.boxplot(df_red['quality'])
 sns.boxplot(df_white['quality'])
 
-#MODELAGEM
+# MODELING
 
-modelar(df_red)
-modelar(df_white)
+model(df_red)
+model(df_white)
